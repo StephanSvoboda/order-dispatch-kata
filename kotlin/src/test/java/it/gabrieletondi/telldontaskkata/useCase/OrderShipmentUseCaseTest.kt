@@ -16,23 +16,22 @@ class OrderShipmentUseCaseTest {
     @Test
     @Throws(Exception::class)
     fun shipApprovedOrder() {
-        val initialOrder = Order()
+        val initialOrder = Order().createEmptyOrder()
         initialOrder.id = 1
-        initialOrder.status = OrderStatus.APPROVED
+        initialOrder.approve()
         orderRepository.addOrder(initialOrder)
         val request = OrderShipmentRequest()
         request.orderId = 1
         useCase.run(request)
-        assertThat(orderRepository.savedOrder?.status, Matchers.`is`(OrderStatus.SHIPPED))
+        assertThat(orderRepository.savedOrder?.shipped(), Matchers.`is`(true))
         assertThat(shipmentService.shippedOrder, Matchers.`is`(initialOrder))
     }
 
     @Test(expected = OrderCannotBeShippedException::class)
     @Throws(Exception::class)
     fun createdOrdersCannotBeShipped() {
-        val initialOrder = Order()
+        val initialOrder = Order().createEmptyOrder()
         initialOrder.id = 1
-        initialOrder.status = OrderStatus.CREATED
         orderRepository.addOrder(initialOrder)
         val request = OrderShipmentRequest()
         request.orderId = 1
@@ -44,9 +43,9 @@ class OrderShipmentUseCaseTest {
     @Test(expected = OrderCannotBeShippedException::class)
     @Throws(Exception::class)
     fun rejectedOrdersCannotBeShipped() {
-        val initialOrder = Order()
+        val initialOrder = Order().createEmptyOrder()
         initialOrder.id = 1
-        initialOrder.status = OrderStatus.REJECTED
+        initialOrder.reject()
         orderRepository.addOrder(initialOrder)
         val request = OrderShipmentRequest()
         request.orderId = 1
@@ -60,7 +59,7 @@ class OrderShipmentUseCaseTest {
     fun shippedOrdersCannotBeShippedAgain() {
         val initialOrder = Order()
         initialOrder.id = 1
-        initialOrder.status = OrderStatus.SHIPPED
+        initialOrder.ship()
         orderRepository.addOrder(initialOrder)
         val request = OrderShipmentRequest()
         request.orderId = 1

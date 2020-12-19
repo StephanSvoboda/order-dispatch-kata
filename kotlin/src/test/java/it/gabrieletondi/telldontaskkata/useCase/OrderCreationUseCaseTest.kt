@@ -2,7 +2,6 @@ package it.gabrieletondi.telldontaskkata.useCase
 
 import it.gabrieletondi.telldontaskkata.domain.Category
 import it.gabrieletondi.telldontaskkata.domain.Order
-import it.gabrieletondi.telldontaskkata.domain.OrderStatus
 import it.gabrieletondi.telldontaskkata.domain.Product
 import it.gabrieletondi.telldontaskkata.doubles.InMemoryProductCatalog
 import it.gabrieletondi.telldontaskkata.doubles.TestOrderRepository
@@ -57,7 +56,7 @@ class OrderCreationUseCaseTest {
         (request.requests as ArrayList<SellItemRequest>).add(tomatoRequest)
         useCase.run(request)
         val insertedOrder: Order = orderRepository.savedOrder!!
-        assertThat(insertedOrder.status, equalTo(OrderStatus.CREATED))
+        assertThat(insertedOrder.created(), equalTo(true))
         assertThat(insertedOrder.total, equalTo(BigDecimal("23.20")))
         assertThat(insertedOrder.tax, equalTo(BigDecimal("2.13")))
         assertThat(insertedOrder.currency, equalTo("EUR"))

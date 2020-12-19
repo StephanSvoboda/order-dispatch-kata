@@ -1,7 +1,6 @@
 package it.gabrieletondi.telldontaskkata.useCase
 
 import it.gabrieletondi.telldontaskkata.domain.Order
-import it.gabrieletondi.telldontaskkata.domain.OrderStatus
 import it.gabrieletondi.telldontaskkata.doubles.TestOrderRepository
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.nullValue
@@ -15,8 +14,7 @@ class OrderApprovalUseCaseTest {
     @Test
     @Throws(Exception::class)
     fun approvedExistingOrder() {
-        val initialOrder = Order()
-        initialOrder.status = OrderStatus.CREATED
+        val initialOrder = Order().createEmptyOrder()
         initialOrder.id = 1
         orderRepository.addOrder(initialOrder)
         val request = OrderApprovalRequest()
@@ -24,14 +22,13 @@ class OrderApprovalUseCaseTest {
         request.isApproved = true
         useCase.run(request)
         val savedOrder: Order = orderRepository.savedOrder!!
-        assertThat(savedOrder.status, `is`(OrderStatus.APPROVED))
+        assertThat(savedOrder.approved(), `is`(true))
     }
 
     @Test
     @Throws(Exception::class)
     fun rejectedExistingOrder() {
-        val initialOrder = Order()
-        initialOrder.status = OrderStatus.CREATED
+        val initialOrder = Order().createEmptyOrder()
         initialOrder.id = 1
         orderRepository.addOrder(initialOrder)
         val request = OrderApprovalRequest()
@@ -39,14 +36,14 @@ class OrderApprovalUseCaseTest {
         request.isApproved = false
         useCase.run(request)
         val savedOrder: Order = orderRepository.savedOrder!!
-        assertThat(savedOrder.status, `is`(OrderStatus.REJECTED))
+        assertThat(savedOrder.rejected(), `is`(true))
     }
 
     @Test(expected = RejectedOrderCannotBeApprovedException::class)
     @Throws(Exception::class)
     fun cannotApproveRejectedOrder() {
         val initialOrder = Order()
-        initialOrder.status = OrderStatus.REJECTED
+        initialOrder.reject()
         initialOrder.id = 1
         orderRepository.addOrder(initialOrder)
         val request = OrderApprovalRequest()
@@ -60,7 +57,7 @@ class OrderApprovalUseCaseTest {
     @Throws(Exception::class)
     fun cannotRejectApprovedOrder() {
         val initialOrder = Order()
-        initialOrder.status = OrderStatus.APPROVED
+        initialOrder.approve()
         initialOrder.id = 1
         orderRepository.addOrder(initialOrder)
         val request = OrderApprovalRequest()
@@ -74,7 +71,7 @@ class OrderApprovalUseCaseTest {
     @Throws(Exception::class)
     fun shippedOrdersCannotBeApproved() {
         val initialOrder = Order()
-        initialOrder.status = OrderStatus.SHIPPED
+        initialOrder.ship()
         initialOrder.id = 1
         orderRepository.addOrder(initialOrder)
         val request = OrderApprovalRequest()
@@ -88,7 +85,7 @@ class OrderApprovalUseCaseTest {
     @Throws(Exception::class)
     fun shippedOrdersCannotBeRejected() {
         val initialOrder = Order()
-        initialOrder.status = OrderStatus.SHIPPED
+        initialOrder.ship()
         initialOrder.id = 1
         orderRepository.addOrder(initialOrder)
         val request = OrderApprovalRequest()
