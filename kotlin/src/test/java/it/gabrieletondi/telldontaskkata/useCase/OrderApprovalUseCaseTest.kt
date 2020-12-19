@@ -1,6 +1,7 @@
 package it.gabrieletondi.telldontaskkata.useCase
 
 import it.gabrieletondi.telldontaskkata.domain.Order
+import it.gabrieletondi.telldontaskkata.domain.OrderStatus
 import it.gabrieletondi.telldontaskkata.doubles.TestOrderRepository
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.nullValue
@@ -22,7 +23,7 @@ class OrderApprovalUseCaseTest {
         request.isApproved = true
         useCase.run(request)
         val savedOrder: Order = orderRepository.savedOrder!!
-        assertThat(savedOrder.approved(), `is`(true))
+        assertThat(savedOrder.status, `is`(OrderStatus.APPROVED))
     }
 
     @Test
@@ -36,7 +37,7 @@ class OrderApprovalUseCaseTest {
         request.isApproved = false
         useCase.run(request)
         val savedOrder: Order = orderRepository.savedOrder!!
-        assertThat(savedOrder.rejected(), `is`(true))
+        assertThat(savedOrder.status, `is`(OrderStatus.REJECTED))
     }
 
     @Test(expected = RejectedOrderCannotBeApprovedException::class)
@@ -71,6 +72,7 @@ class OrderApprovalUseCaseTest {
     @Throws(Exception::class)
     fun shippedOrdersCannotBeApproved() {
         val initialOrder = Order.createEmptyOrder()
+        initialOrder.approve()
         initialOrder.ship()
         initialOrder.id = 1
         orderRepository.addOrder(initialOrder)
@@ -85,6 +87,7 @@ class OrderApprovalUseCaseTest {
     @Throws(Exception::class)
     fun shippedOrdersCannotBeRejected() {
         val initialOrder = Order.createEmptyOrder()
+        initialOrder.approve()
         initialOrder.ship()
         initialOrder.id = 1
         orderRepository.addOrder(initialOrder)

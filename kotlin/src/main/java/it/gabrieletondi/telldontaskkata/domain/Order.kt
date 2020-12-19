@@ -3,6 +3,7 @@ package it.gabrieletondi.telldontaskkata.domain
 import it.gabrieletondi.telldontaskkata.useCase.ApprovedOrderCannotBeRejectedException
 import it.gabrieletondi.telldontaskkata.useCase.OrderCannotBeShippedTwiceException
 import it.gabrieletondi.telldontaskkata.useCase.RejectedOrderCannotBeApprovedException
+import it.gabrieletondi.telldontaskkata.useCase.ShippedOrdersCannotBeChangedException
 import java.math.BigDecimal
 import java.util.ArrayList
 
@@ -15,6 +16,7 @@ class Order {
     var items: List<OrderItem>? = null
     var tax: BigDecimal? = null
     var status: OrderStatus? = null
+        private set
     var id = 0
 
     companion object {
@@ -29,30 +31,16 @@ class Order {
         }
     }
 
-    fun shipped() = status == OrderStatus.SHIPPED
-    fun rejected() = status == OrderStatus.REJECTED
-    fun approved() = status == OrderStatus.APPROVED
-    fun created() = status == OrderStatus.CREATED
-
     fun approve() {
-        if (rejected()) {
-            throw RejectedOrderCannotBeApprovedException()
-        }
         status = status!!.approve()
     }
 
     fun reject() {
-        if (approved()) {
-            throw ApprovedOrderCannotBeRejectedException()
-        }
-        status = OrderStatus.REJECTED
+        status = status!!.reject()
     }
 
     fun ship() {
-        if (shipped()) {
-            throw OrderCannotBeShippedTwiceException()
-        }
-        status = OrderStatus.SHIPPED
+        status = status!!.ship()
     }
 
 

@@ -23,7 +23,7 @@ class OrderShipmentUseCaseTest {
         val request = OrderShipmentRequest()
         request.orderId = 1
         useCase.run(request)
-        assertThat(orderRepository.savedOrder?.shipped(), Matchers.`is`(true))
+        assertThat(orderRepository.savedOrder?.status, Matchers.`is`(OrderStatus.SHIPPED))
         assertThat(shipmentService.shippedOrder, Matchers.`is`(initialOrder))
     }
 
@@ -59,6 +59,7 @@ class OrderShipmentUseCaseTest {
     fun shippedOrdersCannotBeShippedAgain() {
         val initialOrder = Order.createEmptyOrder()
         initialOrder.id = 1
+        initialOrder.approve()
         initialOrder.ship()
         orderRepository.addOrder(initialOrder)
         val request = OrderShipmentRequest()
