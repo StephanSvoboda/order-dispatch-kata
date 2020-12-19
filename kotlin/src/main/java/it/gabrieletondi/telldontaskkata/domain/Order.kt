@@ -8,6 +8,8 @@ import java.util.ArrayList
 
 class Order {
 
+    private constructor()
+
     var total: BigDecimal? = null
     var currency: String? = null
     var items: List<OrderItem>? = null
@@ -15,14 +17,16 @@ class Order {
     var status: OrderStatus? = null
     var id = 0
 
-    fun createEmptyOrder(): Order {
-        val order = Order()
-        order.status = OrderStatus.CREATED
-        order.items = ArrayList()
-        order.currency = "EUR"
-        order.total = BigDecimal("0.00")
-        order.tax = BigDecimal("0.00")
-        return order
+    companion object {
+        fun createEmptyOrder() : Order {
+            val order = Order()
+            order.status = OrderStatus.CREATED
+            order.items = ArrayList()
+            order.currency = "EUR"
+            order.total = BigDecimal("0.00")
+            order.tax = BigDecimal("0.00")
+            return order
+        }
     }
 
     fun shipped() = status == OrderStatus.SHIPPED
@@ -34,7 +38,7 @@ class Order {
         if (rejected()) {
             throw RejectedOrderCannotBeApprovedException()
         }
-        status = OrderStatus.APPROVED
+        status = status!!.approve()
     }
 
     fun reject() {

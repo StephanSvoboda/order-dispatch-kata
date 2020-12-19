@@ -14,7 +14,7 @@ class OrderApprovalUseCaseTest {
     @Test
     @Throws(Exception::class)
     fun approvedExistingOrder() {
-        val initialOrder = Order().createEmptyOrder()
+        val initialOrder = Order.createEmptyOrder()
         initialOrder.id = 1
         orderRepository.addOrder(initialOrder)
         val request = OrderApprovalRequest()
@@ -28,7 +28,7 @@ class OrderApprovalUseCaseTest {
     @Test
     @Throws(Exception::class)
     fun rejectedExistingOrder() {
-        val initialOrder = Order().createEmptyOrder()
+        val initialOrder = Order.createEmptyOrder()
         initialOrder.id = 1
         orderRepository.addOrder(initialOrder)
         val request = OrderApprovalRequest()
@@ -42,7 +42,7 @@ class OrderApprovalUseCaseTest {
     @Test(expected = RejectedOrderCannotBeApprovedException::class)
     @Throws(Exception::class)
     fun cannotApproveRejectedOrder() {
-        val initialOrder = Order()
+        val initialOrder = Order.createEmptyOrder()
         initialOrder.reject()
         initialOrder.id = 1
         orderRepository.addOrder(initialOrder)
@@ -56,7 +56,7 @@ class OrderApprovalUseCaseTest {
     @Test(expected = ApprovedOrderCannotBeRejectedException::class)
     @Throws(Exception::class)
     fun cannotRejectApprovedOrder() {
-        val initialOrder = Order()
+        val initialOrder = Order.createEmptyOrder()
         initialOrder.approve()
         initialOrder.id = 1
         orderRepository.addOrder(initialOrder)
@@ -70,7 +70,7 @@ class OrderApprovalUseCaseTest {
     @Test(expected = ShippedOrdersCannotBeChangedException::class)
     @Throws(Exception::class)
     fun shippedOrdersCannotBeApproved() {
-        val initialOrder = Order()
+        val initialOrder = Order.createEmptyOrder()
         initialOrder.ship()
         initialOrder.id = 1
         orderRepository.addOrder(initialOrder)
@@ -84,7 +84,7 @@ class OrderApprovalUseCaseTest {
     @Test(expected = ShippedOrdersCannotBeChangedException::class)
     @Throws(Exception::class)
     fun shippedOrdersCannotBeRejected() {
-        val initialOrder = Order()
+        val initialOrder = Order.createEmptyOrder()
         initialOrder.ship()
         initialOrder.id = 1
         orderRepository.addOrder(initialOrder)

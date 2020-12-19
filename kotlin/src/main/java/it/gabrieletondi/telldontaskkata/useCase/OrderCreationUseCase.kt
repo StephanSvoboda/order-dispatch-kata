@@ -10,7 +10,7 @@ import java.util.*
 
 class OrderCreationUseCase(private val orderRepository: OrderRepository, private val productCatalog: ProductCatalog) {
     fun run(request: SellItemsRequest) {
-        val order = Order().createEmptyOrder()
+        val order = Order.createEmptyOrder()
         for (itemRequest in request.requests!!) {
             val product = productCatalog.getByName(itemRequest.productName!!)
             if (product == null) {

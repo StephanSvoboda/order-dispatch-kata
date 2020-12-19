@@ -16,7 +16,7 @@ class OrderShipmentUseCaseTest {
     @Test
     @Throws(Exception::class)
     fun shipApprovedOrder() {
-        val initialOrder = Order().createEmptyOrder()
+        val initialOrder = Order.createEmptyOrder()
         initialOrder.id = 1
         initialOrder.approve()
         orderRepository.addOrder(initialOrder)
@@ -30,7 +30,7 @@ class OrderShipmentUseCaseTest {
     @Test(expected = OrderCannotBeShippedException::class)
     @Throws(Exception::class)
     fun createdOrdersCannotBeShipped() {
-        val initialOrder = Order().createEmptyOrder()
+        val initialOrder = Order.createEmptyOrder()
         initialOrder.id = 1
         orderRepository.addOrder(initialOrder)
         val request = OrderShipmentRequest()
@@ -43,7 +43,7 @@ class OrderShipmentUseCaseTest {
     @Test(expected = OrderCannotBeShippedException::class)
     @Throws(Exception::class)
     fun rejectedOrdersCannotBeShipped() {
-        val initialOrder = Order().createEmptyOrder()
+        val initialOrder = Order.createEmptyOrder()
         initialOrder.id = 1
         initialOrder.reject()
         orderRepository.addOrder(initialOrder)
@@ -57,7 +57,7 @@ class OrderShipmentUseCaseTest {
     @Test(expected = OrderCannotBeShippedTwiceException::class)
     @Throws(Exception::class)
     fun shippedOrdersCannotBeShippedAgain() {
-        val initialOrder = Order()
+        val initialOrder = Order.createEmptyOrder()
         initialOrder.id = 1
         initialOrder.ship()
         orderRepository.addOrder(initialOrder)
