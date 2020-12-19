@@ -1,7 +1,5 @@
 package it.gabrieletondi.telldontaskkata.domain
 
-import it.gabrieletondi.telldontaskkata.useCase.*
-
 enum class OrderStatus {
     APPROVED {
         override fun approve(): OrderStatus {
